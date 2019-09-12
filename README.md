@@ -4,7 +4,7 @@ A small node.js library for sending an email with an e-ticket attachment via [Ma
 # Installation
 Installing using npm:
 ```
-
+npm i iffr-ticket-mailer
 ```
 
 # Usage
