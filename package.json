@@ -1,0 +1,42 @@
+{
+  "name": "iffr-ticket-mailer",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "npm run build",
+    "start": "node dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Tom Timmerman <t.timmerman@iffr.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "cwait": "^1.1.2",
+    "fast-csv": "^2.4.1",
+    "handlebars": "^4.0.12",
+    "html-pdf": "^2.2.0",
+    "lodash": "^4.17.11",
+    "mailgun-js": "^0.22.0",
+    "moment": "^2.22.2",
+    "node-fetch": "^2.2.1",
+    "qrcode": "^1.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^3.1.3",
+    "@types/bluebird": "^3.5.24",
+    "@types/handlebars": "^4.0.39",
+    "@types/html-pdf": "^2.1.2",
+    "@types/lodash": "^4.14.118",
+    "@types/mailgun-js": "^0.16.1",
+    "@types/moment": "^2.13.0",
+    "@types/node-fetch": "^2.1.2",
+    "@types/qrcode": "^1.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IFFR/iffr-ticket-mailer.git"
+  },
+  "homepage": "https://github.com/IFFR/iffr-ticket-mailer#readme"
+}
