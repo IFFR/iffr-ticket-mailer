@@ -5,6 +5,7 @@ import * as QRCode from 'qrcode';
 import * as pdf from 'html-pdf';
 import * as handlebars from 'handlebars';
 import {CreateOptions} from "html-pdf";
+import {Attachment, RenderedAttachment} from "./Attachment";
 
 
 export class TicketMailer {
@@ -21,11 +22,15 @@ export class TicketMailer {
     }
 
 
-    public async send(subject: string, from: string, to: string, token: string, emailTemplatePath: string, attachmentTemplatePath: string, templateData: object): Promise<null> {
-        const attachmentPath = this.renderDirectory + '/e-ticket-' + token + '.pdf';
-        templateData['___QRCode'] = await this._renderQrCode(String(token)); // render QR code
-        await this._writePdf(attachmentTemplatePath, attachmentPath, templateData); // write attachment file
-        await this._sendEmail(to, from, subject, templateData, emailTemplatePath, attachmentPath);
+    // public async send(subject: string, from: string, to: string, token: string, emailTemplatePath: string, attachmentTemplatePath: string, templateData: object): Promise<null> {
+    public async send(subject: string, from: string, to: string, emailTemplatePath: string, emailTemplateData: object, attachments: Array<Attachment>): Promise<null> {
+        // const attachmentPath = this.renderDirectory + '/e-ticket-' + token + '.pdf';
+        // templateData['___QRCode'] = await this._renderQrCode(String(token)); // render QR code
+        // await this._writePdf(attachmentTemplatePath, attachmentPath, templateData); // write attachment file
+        // await this._sendEmail(to, from, subject, emailTemplateData, emailTemplatePath, attachmentPath);
+        const renderedAttachments = await this._renderAttachments(attachments);
+        const emailBody = await this._renderTemplate(emailTemplatePath, emailTemplateData);
+        await this.mailgunConnector.sendMail(to, from, subject, emailBody, renderedAttachments);
         return null;
     }
 
@@ -33,6 +38,19 @@ export class TicketMailer {
     private async _renderQrCode(code: string): Promise<any> {
         const qr = promisify(QRCode.toDataURL);
         return qr(code);
+    }
+
+
+    private async _renderAttachments(attachments: Array<Attachment>): Promise<Array<RenderedAttachment>> {
+        const renderedAttachments: Array<RenderedAttachment> = [];
+        for (const {data, templateFilePath, token} of attachments) {
+            const fileName = token + '.pdf';
+            const filePath = this.renderDirectory + fileName;
+            data['___QRCode'] = await this._renderQrCode(String(token)); // render QR code
+            await this._writePdf(templateFilePath, filePath, data); // write attachment file
+            renderedAttachments.push({fileName: fileName, filePath: filePath});
+        }
+        return renderedAttachments;
     }
 
 
@@ -58,10 +76,10 @@ export class TicketMailer {
     }
 
 
-    private async _sendEmail(to: string, from: string, subject: string, data: object, templatePath: string, attachmentPath: string) {
-        const html = await this._renderTemplate(templatePath, data);
-        return this.mailgunConnector.sendMail(to, from, subject, html, attachmentPath);
-    }
+    // private async _sendEmail(to: string, from: string, subject: string, data: object, templatePath: string, attachmentPath: string) {
+    //     const html = await this._renderTemplate(templatePath, data);
+    //     return this.mailgunConnector.sendMail(to, from, subject, html, attachmentPath);
+    // }
 
 }
 

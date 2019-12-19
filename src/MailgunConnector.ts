@@ -1,5 +1,7 @@
 import * as mg from 'mailgun-js';
 import {Mailgun} from "mailgun-js";
+import {RenderedAttachment} from "./Attachment";
+import * as fs from "fs";
 
 export default class MailgunConnector {
 
@@ -11,14 +13,17 @@ export default class MailgunConnector {
     }
 
 
-    public async sendMail(to: string, from: string, subject: string, html: string, attachmentPath: string) {
+    // public async sendMail(to: string, from: string, subject: string, html: string, attachmentPath: string) {
+    public async sendMail(to: string, from: string, subject: string, html: string, attachments: Array<RenderedAttachment>) {
         return new Promise((resolve, reject) => {
             const data = {
                 from: from,
                 to: to,
                 subject: subject,
                 html: html,
-                attachment: attachmentPath
+                attachment: attachments.map((attachment: RenderedAttachment) => {
+                    return new this.mailgun.Attachment({data: fs.readFileSync(attachment.filePath), filename: attachment.fileName});
+                })
             };
 
             // console.log(`Send email ${JSON.stringify(data)}`);

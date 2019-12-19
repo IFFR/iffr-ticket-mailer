@@ -28,20 +28,24 @@ domain | string | Mailgun domain.
 renderDir | string | Path to the directory where attachment pdf's will be rendered to. 
 
 
-## .send(ticketTemplate, emailTemplate, subject, from, to, token, data)
+## .send(subject, from, to, emailTemplatePath, emailTemplateData, attachments)
 Send e-ticket by email.
 
 Property | Type | Description
 --- | --- | ---
-ticketTemplate | string | Path to the ticket handlebars template.
-emailTemplate | string | Path to the email handlebars template.
 subject | string | Subject line of the email.
 from | string | Sender email address.
 to | string | Recipient email address.
+emailTemplatePath | string | Path to the email handlebars template.
+emailTemplateData | string | Template data that will be passed to the email template on render.
+attachments | string | Collection of attachments that will be send with the email. See description below.
+
+### Attachments
+Property | Type | Description
+--- | --- | ---
+templateFilePath | string | Path to the attachment handlebars template.
 token | string | QR code that will be rendered on the ticket.
 data | object | Template data that will be passed to the email and attachment template on render.
-
- 
 
 
 
